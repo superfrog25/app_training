@@ -146,15 +146,40 @@ def export_lines(workout: Workout) -> list[tuple[str, str]]:
     return lines
 
 
+
 def make_workout_image(workout: Workout) -> Image.Image:
     """Create a high-resolution, printable workout card without external services."""
     width, margin = 1600, 100
+
+    def get_font(size: int, bold: bool = False):
+        """Load a font that works on both Windows and Streamlit Cloud/Linux."""
+        if bold:
+            font_paths = [
+                "C:/Windows/Fonts/arialbd.ttf",
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            ]
+        else:
+            font_paths = [
+                "C:/Windows/Fonts/arial.ttf",
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            ]
+
+        for font_path in font_paths:
+            try:
+                return ImageFont.truetype(font_path, size)
+            except OSError:
+                continue
+
+        # Final fallback if neither font is available
+        return ImageFont.load_default()
+
     fonts = {
-        "title": ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 64),
-        "summary": ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 34),
-        "heading": ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 42),
-        "body": ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 34),
+        "title": get_font(64, bold=True),
+        "summary": get_font(34),
+        "heading": get_font(42, bold=True),
+        "body": get_font(34),
     }
+    
     wrapped_lines: list[tuple[str, str]] = []
     wrap_widths = {"title": 35, "summary": 68, "heading": 52, "body": 72}
     for content, style in export_lines(workout):
