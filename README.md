@@ -5,7 +5,7 @@ This Streamlit app adapts the circuit, EMOM, HYROX-simulation, exercise-pool and
 ## Start it
 
 ```powershell
-cd "C:\Users\sarac\Documents\Codex\2026-09-05\files-mentioned-by-the-user-allenamenti"
+cd "wd"
 python -m pip install -r requirements.txt
 streamlit run app.py
 ```
